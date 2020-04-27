@@ -656,6 +656,7 @@ nodes
           .style("top", d3.event.pageY - 10 + "px")
           .style("display", "inline-block")
           .html(`Name: ${d.data.name}<br>Category: ${d.data.category}<br>Value: ${d.data.value}`)
+          .attr("data-value", d3.event.target.dataset.value)
   })
 
 
