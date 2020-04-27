@@ -607,7 +607,7 @@ const systems = {
 "SNES": "violet",
 "PS": "aqua",
 "N64": "magenta",
-"GBA": "tangerine",
+"GBA": "white",
 "XB": "navy",
 "PC": "gold",
 "2600": "silver",
@@ -621,45 +621,35 @@ const w = 960;
 const svg = d3.select("div").append("svg").attr("width", w).attr("height", h);
 
 let root = d3.hierarchy(dataset);
-let treemapLayout = d3.treemap().size([1000, 1000]).paddingOuter(10);
+let treemapLayout = d3.treemap().size([1000, 1000]);
 root.sum((d) => d.value);
 
 treemapLayout(root);
 
-svg
-  .selectAll("rect")
+
+let nodes = svg
+  .selectAll("g")
   .data(root.descendants())
   .enter()
+  .append("g")
+  .attr("transform", function (d) {
+    return "translate(" + [d.x0, d.y0] + ")";
+  });
+
+nodes
   .append("rect")
-  .attr("x", (d) => d.x0)
-  .attr("y", (d) => d.y0)
-  .attr("height", (d) => d.x1 - d.x0)
-  .attr("width", (d) => d.y1 - d.y0)
-  .attr("fill", d => systems[d.data.category]);
+  .attr("width", function (d) {
+    return d.x1 - d.x0;
+  })
+  .attr("height", function (d) {
+    return d.y1 - d.y0;
+  })
+  .attr("fill", d => systems[d.data.category]) ;
+;
 
-// let nodes = d3
-//   .select("svg g")
-//   .selectAll("g")
-//   .data(root.descendants())
-//   .enter()
-//   .append("g")
-//   .attr("transform", function (d) {
-//     return "translate(" + [d.x0, d.y0] + ")";
-//   });
-
-// nodes
-//   .append("rect")
-//   .attr("width", function (d) {
-//     return d.x1 - d.x0;
-//   })
-//   .attr("height", function (d) {
-//     return d.y1 - d.y0;
-//   });
-
-// nodes
-//   .append("text")
-//   .attr("dx", 4)
-//   .attr("dy", 14)
-//   .text(function (d) {
-//     return d.name;
-//   });
+nodes
+  .append("text")
+  .attr("dx", 4)
+  .attr("dy", 14)
+  .text((d) => d.data.name)
+  .style("font-size", "10px");
