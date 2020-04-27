@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 const dataset = {
   name: "Video Game Sales Data Top 100",
   children: [
@@ -596,11 +596,51 @@ const dataset = {
 };
 
 const margin = 50;
-    h = 1000;
-    w = 1000;
+const h = 1000;
+const w = 1000;
 
-    const svg = d3.select("div")
-    .attr("width", w)
-    .attr("height", h)
+const svg = d3.select("div").append("svg").attr("width", w).attr("height", h);
 
-    let root = d3.hierarchy(dataset)
+let root = d3.hierarchy(dataset);
+let treemapLayout = d3.treemap().size([1000, 1000]).paddingOuter(10);
+root.sum((d) => d.value);
+
+treemapLayout(root);
+
+svg
+  .selectAll("rect")
+  .data(root.descendants())
+  .enter()
+  .append("rect")
+  .attr("x", (d) => d.x0)
+  .attr("y", (d) => d.y0)
+  .attr("height", (d) => d.x1 - d.x0)
+  .attr("width", (d) => d.y1 - d.y0)
+  .attr("fill", "lightblue");
+
+// var nodes = d3
+//   .select("svg g")
+//   .selectAll("g")
+//   .data(rootNode.descendants())
+//   .enter()
+//   .append("g")
+//   .attr("transform", function (d) {
+//     return "translate(" + [d.x0, d.y0] + ")";
+//   });
+
+// nodes
+//   .append("rect")
+//   .attr("width", function (d) {
+//     return d.x1 - d.x0;
+//   })
+//   .attr("height", function (d) {
+//     return d.y1 - d.y0;
+//   });
+
+// nodes
+//   .append("text")
+//   .attr("dx", 4)
+//   .attr("dy", 14)
+//   .text(function (d) {
+//     return d.name;
+//   });
