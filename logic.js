@@ -594,10 +594,29 @@ const dataset = {
     },
   ],
 };
-
-const margin = 50;
-const h = 1000;
-const w = 1000;
+const systems = {
+"Wii": "blue",
+"DS": "green",
+"X360": "yellow",
+"GB": "red",
+"PS3": "orange",
+"NES": "pink",
+"PS2": "purple",
+"3DS": "grey",
+"PS4": "maroon",
+"SNES": "violet",
+"PS": "aqua",
+"N64": "magenta",
+"GBA": "tangerine",
+"XB": "navy",
+"PC": "gold",
+"2600": "silver",
+"PSP": "bronze",
+"XOne": "brown"
+}
+const margin = 10;
+const h = 570;
+const w = 960;
 
 const svg = d3.select("div").append("svg").attr("width", w).attr("height", h);
 
@@ -616,12 +635,12 @@ svg
   .attr("y", (d) => d.y0)
   .attr("height", (d) => d.x1 - d.x0)
   .attr("width", (d) => d.y1 - d.y0)
-  .attr("fill", "lightblue");
+  .attr("fill", d => systems[d.data.category]);
 
-// var nodes = d3
+// let nodes = d3
 //   .select("svg g")
 //   .selectAll("g")
-//   .data(rootNode.descendants())
+//   .data(root.descendants())
 //   .enter()
 //   .append("g")
 //   .attr("transform", function (d) {
