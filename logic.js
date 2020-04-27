@@ -595,37 +595,38 @@ const dataset = {
   ],
 };
 const systems = {
-"Wii": "blue",
-"DS": "green",
-"X360": "yellow",
-"GB": "red",
-"PS3": "orange",
-"NES": "pink",
-"PS2": "purple",
-"3DS": "grey",
-"PS4": "maroon",
-"SNES": "violet",
-"PS": "aqua",
-"N64": "magenta",
-"GBA": "white",
-"XB": "navy",
-"PC": "gold",
-"2600": "silver",
-"PSP": "bronze",
-"XOne": "brown"
-}
+  Wii: "rgb(76, 146, 195",
+  DS: "rgb(190, 210, 237)",
+  X360: "rgb(255, 153, 62)",
+  GB: "rgb(255, 201, 147)",
+  PS3: "rgb(86, 179, 86)",
+  NES: "rgb(173, 229, 161)",
+  PS2: "rgb(222, 82, 83)",
+  "3DS": "rgb(255, 173, 171)",
+  PS4: "rgb(169, 133, 202)",
+  SNES: "rgb(209, 192, 221)",
+  PS: "rgb(163, 120, 111)",
+  N64: "rgb(208, 176, 169)",
+  GBA: "rgb(233, 146, 206)",
+  XB: "rgb(249, 197, 219)",
+  PC: "rgb(153, 153, 153)",
+  "2600": "rgb(210, 210, 210)",
+  PSP: "rgb(201, 202, 78)",
+  XOne: "rgb(226, 226, 164)",
+};
 const margin = 10;
 const h = 570;
 const w = 960;
 
 const svg = d3.select("div").append("svg").attr("width", w).attr("height", h);
+let tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
 
 let root = d3.hierarchy(dataset);
-let treemapLayout = d3.treemap().size([1000, 1000]);
-root.sum((d) => d.value);
+let treemapLayout = d3.treemap().size([w, h]).paddingInner(1);
+root.sum((d) => d.value).sort((a,b) => {return b.height - a.height || b.value - a.value});
 
 treemapLayout(root);
-
 
 let nodes = svg
   .selectAll("g")
@@ -633,19 +634,30 @@ let nodes = svg
   .enter()
   .append("g")
   .attr("transform", function (d) {
-    return "translate(" + [d.x0, d.y0] + ")";
+    return "translate(" + [ d.x0,d.y0] + ")";
   });
 
 nodes
   .append("rect")
+  .attr("class","tile")
+  .attr("data-name", d => d.data.name)
+  .attr("data-category", d => d.data.category)
+  .attr("data-value", d => d.data.value)
   .attr("width", function (d) {
     return d.x1 - d.x0;
   })
   .attr("height", function (d) {
     return d.y1 - d.y0;
   })
-  .attr("fill", d => systems[d.data.category]) ;
-;
+  .attr("fill", (d) => systems[d.data.category])
+  .on("mouseover",d => {
+    tooltip
+          .style("left", d3.event.pageX - 10 + "px")
+          .style("top", d3.event.pageY - 10 + "px")
+          .style("display", "inline-block")
+          .html(`Name: ${d.data.name}<br>Category: ${d.data.category}<br>Value: ${d.data.value}`)
+  })
+
 
 nodes
   .append("text")
