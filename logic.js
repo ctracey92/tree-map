@@ -621,10 +621,13 @@ const w = 960;
 const svg = d3.select("div").append("svg").attr("width", w).attr("height", h);
 let tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
-
 let root = d3.hierarchy(dataset);
 let treemapLayout = d3.treemap().size([w, h]).paddingInner(1);
-root.sum((d) => d.value).sort((a,b) => {return b.height - a.height || b.value - a.value});
+root
+  .sum((d) => d.value)
+  .sort((a, b) => {
+    return b.height - a.height || b.value - a.value;
+  });
 
 treemapLayout(root);
 
@@ -634,15 +637,15 @@ let nodes = svg
   .enter()
   .append("g")
   .attr("transform", function (d) {
-    return "translate(" + [ d.x0,d.y0] + ")";
+    return "translate(" + [d.x0, d.y0] + ")";
   });
 
 nodes
   .append("rect")
-  .attr("class","tile")
-  .attr("data-name", d => d.data.name)
-  .attr("data-category", d => d.data.category)
-  .attr("data-value", d => d.data.value)
+  .attr("class", "tile")
+  .attr("data-name", (d) => d.data.name)
+  .attr("data-category", (d) => d.data.category)
+  .attr("data-value", (d) => d.data.value)
   .attr("width", function (d) {
     return d.x1 - d.x0;
   })
@@ -650,15 +653,19 @@ nodes
     return d.y1 - d.y0;
   })
   .attr("fill", (d) => systems[d.data.category])
-  .on("mouseover",d => {
+  .on("mouseover", (d) => {
     tooltip
-          .style("left", d3.event.pageX - 10 + "px")
-          .style("top", d3.event.pageY - 10 + "px")
-          .style("display", "inline-block")
-          .html(`Name: ${d.data.name}<br>Category: ${d.data.category}<br>Value: ${d.data.value}`)
-          .attr("data-value", d3.event.target.dataset.value)
-  })
-
+      .style("left", d3.event.pageX + 50 + "px")
+      .style("top", d3.event.pageY - 100 + "px")
+      .style("position", "absolute")
+      .style("display", "flex")
+      .style("opacity", 0.9)
+      .style("background-color", "lightgrey")
+      .html(
+        `Name: ${d.data.name}<br>Category: ${d.data.category}<br>Value: ${d.data.value}`
+      )
+      .attr("data-value", d3.event.target.dataset.value);
+  });
 
 nodes
   .append("text")
