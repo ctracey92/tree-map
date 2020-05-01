@@ -618,7 +618,11 @@ const margin = 10;
 const h = 570;
 const w = 960;
 
-const svg = d3.select("div").append("svg").attr("width", w).attr("height", h);
+const svg = d3
+  .select("#chart")
+  .append("svg")
+  .attr("width", w)
+  .attr("height", h);
 let tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
 let root = d3.hierarchy(dataset);
@@ -673,3 +677,72 @@ nodes
   .attr("dy", 14)
   .text((d) => d.data.name)
   .style("font-size", "10px");
+
+let dom = [
+  { sys: "Wii", color: "rgb(76, 146, 195)" },
+  { sys: "DS", color: "rgb(190, 210, 237)" },
+  { sys: "X360", color: "rgb(255, 153, 62)" },
+  { sys: "GB", color: "rgb(255, 201, 147)" },
+  { sys: "PS3", color: "rgb(86, 179, 86)" },
+  { sys: "NES", color: "rgb(173, 229, 161)" },
+  { sys: "PS2", color: "rgb(222, 82, 83)" },
+  { sys: "3DS", color: "rgb(255, 173, 171)" },
+  { sys: "PS4", color: "rgb(169, 133, 202)" },
+  { sys: "SNES", color: "rgb(209, 192, 221)" },
+  { sys: "PS", color: "rgb(163, 120, 111)" },
+  { sys: "N64", color: "rgb(208, 176, 169)" },
+  { sys: "GBA", color: "rgb(233, 146, 206)" },
+  { sys: "XB", color: "rgb(249, 197, 219)" },
+  { sys: "PC", color: "rgb(153, 153, 153)" },
+  { sys: "2600", color: "rgb(210, 210, 210)" },
+  { sys: "PSP", color: "rgb(201, 202, 78)" },
+  { sys: "XOne", color: "rgb(226, 226, 164)" },
+];
+
+let legend = d3
+  .select("#legend")
+  .append("svg")
+  .attr("height", 500)
+  .attr("width", 500);
+
+let legendWidth = +legend.attr("width");
+const LEGEND_OFFSET = 10;
+const LEGEND_RECT_SIZE = 15;
+const LEGEND_H_SPACING = 150;
+const LEGEND_V_SPACING = 10;
+const LEGEND_TEXT_X_OFFSET = 3;
+const LEGEND_TEXT_Y_OFFSET = -2;
+let legendElemsPerRow = Math.floor(legendWidth / LEGEND_H_SPACING);
+
+let legendEl = legend
+  .append("g")
+  .attr("transform", `translate(75,10)`)
+  .selectAll("g")
+  .data(dom)
+  .enter()
+  .append("g")
+  .attr("transform", function (d, i) {
+    return (
+      "translate(" +
+      (i % legendElemsPerRow) * LEGEND_H_SPACING +
+      "," +
+      (Math.floor(i / legendElemsPerRow) * LEGEND_RECT_SIZE +
+        LEGEND_V_SPACING * Math.floor(i / legendElemsPerRow)) +
+      ")"
+    );
+  });
+legendEl
+  .append("rect")
+  .attr("width", 15)
+  .attr("height", 15)
+  .attr("fill", (d) => {
+    return d.color;
+  });
+
+legendEl
+  .append("text")
+  .attr("x", LEGEND_RECT_SIZE + LEGEND_TEXT_X_OFFSET)
+  .attr("y", LEGEND_RECT_SIZE + LEGEND_TEXT_Y_OFFSET)
+  .text(function (d) {
+    return d.sys;
+  });
